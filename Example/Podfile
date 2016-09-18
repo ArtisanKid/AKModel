@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'AKModel_Example' do
+  pod 'AKModel', :path => '../'
+
+  target 'AKModel_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
