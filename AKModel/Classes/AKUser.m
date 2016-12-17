@@ -9,11 +9,10 @@
 #import "AKUser.h"
 #import <libkern/OSAtomic.h>
 #import "AKCoding.h"
-#import <AKSingleton/AKSingletonCache.h>
 
 @interface AKUser ()
 
-@property (nonatomic, assign) BOOL innerLogined;
+@property (nonatomic, strong) NSMapTable *delegateTable;
 
 @end
 
@@ -22,15 +21,31 @@
 #pragma mark- 创建锁
 static OSSpinLock AKUser_Lock = OS_SPINLOCK_INIT;
 
++ (AKUser *)currentUser {
+    static AKUser *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if(!(sharedInstance = [self readSingleton])) {
+            sharedInstance = [[super allocWithZone:NULL] init];
+        }
+        [sharedInstance startKVO];
+        [sharedInstance unregisterKVO:@"delegateTable", nil];
+    });
+    return sharedInstance;
+}
+
 AKCoding
-AKSingletonCache(AKUser, currentUser, _userID, _openID, _role, _portrait, _smallPortrait, _largePortrait, _nickName, _realName, _gender, _mobile, _tel, _email, _address, _brief, _detail)
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    [self cacheSingleton];
+}
 
 #pragma mark- 私有方法
-- (NSMapTable *)registerTable {
+- (NSMapTable *)delegateTable {
     static NSMapTable<id, NSMutableArray<void(^)(id target, BOOL isLogined)> *> *registerTable = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        registerTable = NSMapTable.weakToStrongObjectsMapTable;
+        registerTable = [NSMapTable weakToStrongObjectsMapTable];
     });
     return registerTable;
 }
@@ -43,41 +58,31 @@ AKSingletonCache(AKUser, currentUser, _userID, _openID, _role, _portrait, _small
     return _userID;
 }
 
-static NSString *AK_User_VisitorID = nil;
-+ (NSString *)visitorID {
-    return AK_User_VisitorID;
-}
-
-+ (void)setVisitorID:(NSString *)visitorID {
-    AK_User_VisitorID = visitorID;
-}
-
-- (BOOL)isLogined {
-    return _innerLogined;
-}
-
 - (void)setLogined:(BOOL)logined {
-    if(_innerLogined == logined) {
+    if(_logined == logined) {
         return;
     }
     
-    _innerLogined = logined;
-    if(_innerLogined) {
-        [self cache];
+    if(logined) {
+        [self willChangeValueForKey:@"logined"];
+        _logined = logined;
+        [self didChangeValueForKey:@"logined"];
     } else {
-        [self clear];
+        _logined = logined;
+        [self clearUp];
+        [self cacheSingleton];
     }
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         OSSpinLockLock(&AKUser_Lock);
-        NSEnumerator *enumerator = self.registerTable.keyEnumerator;
+        NSEnumerator *enumerator = self.delegateTable.keyEnumerator;
         id target = nil;
         while ((target = enumerator.nextObject)) {
-            NSArray *blocksI = [[self.registerTable objectForKey:target] copy];
+            NSArray *blocksI = [[self.delegateTable objectForKey:target] copy];
             [blocksI enumerateObjectsUsingBlock:^(void (^ _Nonnull block)(id, BOOL), NSUInteger idx, BOOL * _Nonnull stop) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (block) {
-                        block(target, _innerLogined);
+                        block(target, _logined);
                     }
                 });
             }];
@@ -92,10 +97,10 @@ static NSString *AK_User_VisitorID = nil;
     }
     OSSpinLockLock(&AKUser_Lock);
     
-    NSMutableArray *blocksM = [self.currentUser.registerTable objectForKey:target];
+    NSMutableArray *blocksM = [self.currentUser.delegateTable objectForKey:target];
     if(!blocksM) {
         blocksM = NSMutableArray.array;
-        [self.currentUser.registerTable setObject:blocksM forKey:target];
+        [self.currentUser.delegateTable setObject:blocksM forKey:target];
     }
     [blocksM addObject:block];
     

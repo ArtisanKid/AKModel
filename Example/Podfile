@@ -2,7 +2,6 @@
 
 target 'AKModel_Example' do
   pod 'AKModel', :path => '../'
-  pod 'AKSingleton', :git => 'git@github.com:ArtisanKid/AKSingleton.git'
 
   target 'AKModel_Tests' do
     inherit! :search_paths

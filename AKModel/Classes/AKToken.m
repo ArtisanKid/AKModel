@@ -8,61 +8,73 @@
 
 #import "AKToken.h"
 #import "AKCoding.h"
-#import <AKSingleton/AKSingletonCache.h>
-
-@interface AKToken ()
-
-@property (nonatomic, assign) BOOL innerValid;
-@property (nonatomic, assign) BOOL innerUnexpire;
-
-@end
 
 @implementation AKToken
 
++ (AKToken *)currentToken {
+    static AKToken *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if(!(sharedInstance = [self readSingleton])) {
+            sharedInstance = [[super allocWithZone:NULL] init];
+        }
+        [sharedInstance startKVO];
+    });
+    return sharedInstance;
+}
+
 AKCoding
-AKSingletonCache(AKToken, currentToken, _accessToken, _refreshToken, _expireTimestamp, _type, _innerValid, _innerUnexpire)
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    [self cacheSingleton];
+}
 
 #pragma mark- 协议方法
+@synthesize valid = _valid;
 
 - (void)setValid:(BOOL)valid {
-    if(self.innerValid == valid) {
+    if(_valid == valid) {
         return;
     }
     
-    self.innerValid = valid;
-    self.unexpire = self.innerValid;
+    if(valid) {
+        [self willChangeValueForKey:@"valid"];
+        _valid = valid;
+        [self willChangeValueForKey:@"valid"];
+    } else {
+        _valid = valid;
+        [self clearUp];
+        [self cacheSingleton];
+    }
 }
 
 - (BOOL)isValid {
     //数据缺失情况下认为是不合法
     if (!self.accessToken.length || 
         !self.refreshToken.length || 
-        !self.expireTimestamp || 
-        !self.type.length) {
-        if(self.innerValid) {
-            _innerValid = NO;
-            [self cache];
-        }
+        !self.expireTimestamp) {
+        self.valid = NO;
     }
-    return self.innerValid;
+    return _valid;
 }
 
-- (void)setUnexpire:(BOOL)unexpire {
-    if(self.innerUnexpire == unexpire) {
+@synthesize unexpired = _unexpired;
+
+- (void)setUnexpired:(BOOL)unexpired {
+    if(_unexpired == unexpired) {
         return;
     }
     
-    self.innerUnexpire = unexpire;
+    [self willChangeValueForKey:@"unexpired"];
+    _unexpired = unexpired;
+    [self willChangeValueForKey:@"unexpired"];
 }
 
-- (BOOL)isUnexpire {
-    if (self.expireTimestamp - NSDate.date.timeIntervalSince1970 < 60) {
-        if(self.innerUnexpire) {
-            _innerUnexpire = NO;
-            [self cache];
-        }
+- (BOOL)isUnexpired {
+    if (self.expireTimestamp < [NSDate date].timeIntervalSince1970) {
+        self.unexpired = NO;
     }
-    return self.innerUnexpire;
+    return _unexpired;
 }
 
 @end

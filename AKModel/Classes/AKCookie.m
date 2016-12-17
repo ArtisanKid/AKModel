@@ -8,59 +8,54 @@
 
 #import "AKCookie.h"
 #import "AKCoding.h"
-#import <AKSingleton/AKSingletonCache.h>
-
-@interface AKCookie ()
-
-@property (nonatomic, assign) BOOL innerValid;
-@property (nonatomic, assign) BOOL innerUnexpire;
-
-@end
 
 @implementation AKCookie
 
++ (AKCookie *)currentCookie {
+    static AKCookie *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if(!(sharedInstance = [self readSingleton])) {
+            sharedInstance = [[super allocWithZone:NULL] init];
+        }
+        [sharedInstance startKVO];
+    });
+    return sharedInstance;
+}
+
 AKCoding
-AKSingletonCache(AKCookie, currentCookie, _zTicket, _expireTimestamp, _innerValid, _innerUnexpire)
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    [self cacheSingleton];
+}
 
 #pragma mark- 协议方法
+@synthesize valid = _valid;
 
 - (void)setValid:(BOOL)valid {
-    if(self.innerValid == valid) {
+    if(_valid == valid) {
         return;
     }
     
-    self.innerValid = valid;
-    self.unexpire = self.innerValid;
+    if(valid) {
+        [self willChangeValueForKey:@"valid"];
+        _valid = valid;
+        [self willChangeValueForKey:@"valid"];
+    } else {
+        _valid = valid;
+        [self clearUp];
+        [self cacheSingleton];
+    }
 }
 
 - (BOOL)isValid {
     //数据缺失情况下认为是不合法
     if (!self.zTicket.length || 
-        !self.expireTimestamp) {
-        if(self.innerValid) {
-            _innerValid = NO;
-            [self cache];
-        }
+        !self.expireTimestamp ||
+        self.expireTimestamp < [NSDate date].timeIntervalSince1970) {
+        self.valid = NO;
     }
-    return self.innerValid;
-}
-
-- (void)setUnexpire:(BOOL)unexpire {
-    if(self.innerUnexpire == unexpire) {
-        return;
-    }
-    
-    self.innerUnexpire = unexpire;
-}
-
-- (BOOL)isUnexpire {
-    if (self.expireTimestamp - NSDate.date.timeIntervalSince1970 < 60) {
-        if(self.innerUnexpire) {
-            _innerUnexpire = NO;
-            [self cache];
-        }
-    }
-    return self.innerUnexpire;
+    return _valid;
 }
 
 @end
