@@ -12,71 +12,61 @@
 
 @interface AKModel ()
 
-@property (nonatomic, strong) NSMutableSet *kvoKeysM;
+@property (nonatomic, strong) NSMutableSet *observedKeyPathsM;
 
 @end
 
 @implementation AKModel
 
-- (void)registerKVO:(NSString *)firstKey, ... {
-    NSString *key = firstKey;
+- (void)registerKVO:(NSString *)firstKeyPath, ... {
+    NSString *keyPath = firstKeyPath;
     va_list argList;
-    va_start(argList, firstKey);
+    va_start(argList, firstKeyPath);
     do {
-        if(![key isKindOfClass:[NSString class]]) {
+        if(![keyPath isKindOfClass:[NSString class]]) {
             return;
         }
         
-        if(!key.length) {
+        if(!keyPath.length) {
             return;
         }
         
-        if([self.kvoKeysM containsObject:key]) {
+        if([self.observedKeyPathsM containsObject:keyPath]) {
             return;
         }
         
-        [self.kvoKeysM addObject:key];
-        [self addObserver:self forKeyPath:key options:NSKeyValueObservingOptionNew context:NULL];
-    } while (key = va_arg(argList, id));
+        [self.observedKeyPathsM addObject:keyPath];
+        [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
+    } while (keyPath = va_arg(argList, id));
     va_end(argList);
 }
 
-- (void)unregisterKVO:(NSString *)firstKey, ... {
-    NSString *key = firstKey;
+- (void)unregisterKVO:(NSString *)firstKeyPath, ... {
+    NSString *keyPath = firstKeyPath;
     va_list argList;
-    va_start(argList, firstKey);
+    va_start(argList, firstKeyPath);
     do {
-        if(![key isKindOfClass:[NSString class]]) {
+        if(![keyPath isKindOfClass:[NSString class]]) {
             return;
         }
         
-        if(!key.length) {
+        if(!keyPath.length) {
             return;
         }
         
-        if(![self.kvoKeysM containsObject:key]) {
+        if(![self.observedKeyPathsM containsObject:keyPath]) {
             return;
         }
         
-        [self.kvoKeysM removeObject:key];
-        [self removeObserver:self forKeyPath:key];
-    } while (key = va_arg(argList, id));
+        [self.observedKeyPathsM removeObject:keyPath];
+        [self removeObserver:self forKeyPath:keyPath];
+    } while (keyPath = va_arg(argList, id));
     va_end(argList);
-}
-
-- (void)startKVO {
-    [self.kvoKeysM addObjectsFromArray:[[self class] customPropertyNames]];
-    [self resumeKVO];
-}
-
-- (void)stopKVO {
-    [self pauseKVO];
-    [self.kvoKeysM removeAllObjects];
 }
 
 - (void)clearUp {
     [self pauseKVO];
-    [[self.kvoKeysM copy] enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[self.observedKeyPathsM copy] enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         id object = [self valueForKey:key];
         if([object isKindOfClass:[NSValue class]]) {
             [self setValue:sjb_nilValue(object) forKey:key];
@@ -140,32 +130,33 @@
 }
 
 #pragma mark - Private Method
-- (NSMutableSet *)kvoKeysM {
-    if(_kvoKeysM) {
-        return _kvoKeysM;
+- (NSMutableSet *)observedKeyPathsM {
+    if(_observedKeyPathsM) {
+        return _observedKeyPathsM;
     }
     
-    _kvoKeysM = [NSMutableSet set];
-    return _kvoKeysM;
+    _observedKeyPathsM = [NSMutableSet set];
+    return _observedKeyPathsM;
 }
 
 - (void)pauseKVO {
-    [[self.kvoKeysM copy] enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[self.observedKeyPathsM copy] enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         [self removeObserver:self forKeyPath:key];
     }];
 }
 
 - (void)resumeKVO {
-    [[self.kvoKeysM copy] enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[self.observedKeyPathsM copy] enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         [self addObserver:self forKeyPath:key options:NSKeyValueObservingOptionNew context:NULL];
     }];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     AKModelLog(@"变更属性%@，%@", keyPath, change);
+    [self cacheSingleton];
 }
 
-+ (NSMutableArray<NSString *> *)customPropertyNames {
++ (NSArray<NSString *> *)customPropertyNames {
     Class class = [self class];
     NSMutableArray *namesM = [NSMutableArray array];
     do {
@@ -205,7 +196,7 @@
     return path;
 }
 
-//模型对象路径，
+//模型对象路径
 + (NSString *)modelPathWithFolderPath:(NSString *)folderPath signature:(NSString *)signature {
     NSMutableArray *componentsM = [NSMutableArray array];
     [componentsM addObject:folderPath];

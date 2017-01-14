@@ -28,17 +28,12 @@ static OSSpinLock AKUser_Lock = OS_SPINLOCK_INIT;
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        [sharedInstance startKVO];
-        [sharedInstance unregisterKVO:@"delegateTable", nil];
+        [sharedInstance registerKVO:@"visitorID", @"userID", @"openID", @"logined", @"role", @"portrait", @"smallPortrait", @"largePortrait", @"nickName", @"realName", @"gender", @"mobile", @"tel", @"email", @"address", @"brief", @"detail", @"loginType", nil];
     });
     return sharedInstance;
 }
 
 AKCoding
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    [self cacheSingleton];
-}
 
 #pragma mark- 私有方法
 - (NSMapTable *)delegateTable {

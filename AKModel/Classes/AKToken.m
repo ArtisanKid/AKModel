@@ -18,16 +18,12 @@
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        [sharedInstance startKVO];
+        [sharedInstance registerKVO:@"accessToken", @"refreshToken", @"expiredTime", @"valid", @"unexpired", nil];
     });
     return sharedInstance;
 }
 
 AKCoding
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    [self cacheSingleton];
-}
 
 #pragma mark- 协议方法
 @synthesize valid = _valid;

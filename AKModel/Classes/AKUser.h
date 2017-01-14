@@ -31,8 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *smallPortrait;/**<小头像，主要用于IM，通知等*/
 @property (nonatomic, copy) NSString *largePortrait;/**<大头像*/
 
-@property (nonatomic, strong) NSString *nickName;/**<昵称*/
-@property (nonatomic, strong) NSString *realName;/**<真名*/
+@property (nonatomic, strong) NSString *nickname;/**<昵称*/
+@property (nonatomic, strong) NSString *realname;/**<真名*/
 
 @property (nonatomic, assign) NSUInteger gender;/**<性别*/
 

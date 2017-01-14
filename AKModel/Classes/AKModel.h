@@ -12,11 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AKModel : NSObject
 
-- (void)registerKVO:(NSString *)firstKey, ... NS_REQUIRES_NIL_TERMINATION;
-- (void)unregisterKVO:(NSString *)firstKey, ... NS_REQUIRES_NIL_TERMINATION;
+//监听自身属性
+- (void)registerKVO:(NSString *)firstKeyPath, ... NS_REQUIRES_NIL_TERMINATION;
 
-- (void)startKVO;
-- (void)stopKVO;
+
+- (void)unregisterKVO:(NSString *)firstKeyPath, ... NS_REQUIRES_NIL_TERMINATION;
 
 - (void)clearUp;
 

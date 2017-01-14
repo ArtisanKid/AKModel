@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, nonatomic, strong, readonly) AKCookie *currentCookie;/**<当前cookie*/
 
 @property (nonatomic, copy) NSString *zTicket;
-@property (nonatomic, assign) NSTimeInterval expireTimestamp;/**<过期时间*/
+@property (nonatomic, assign) NSTimeInterval expiredTime;/**<过期时间*/
 @property (nonatomic, assign, getter=isValid) BOOL valid;/**<是否有效*/
 
 @end

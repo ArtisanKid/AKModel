@@ -18,16 +18,12 @@
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        [sharedInstance startKVO];
+        [sharedInstance registerKVO:@"zTicket", @"expiredTime", @"valid", nil];
     });
     return sharedInstance;
 }
 
 AKCoding
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    [self cacheSingleton];
-}
 
 #pragma mark- 协议方法
 @synthesize valid = _valid;
@@ -51,8 +47,8 @@ AKCoding
 - (BOOL)isValid {
     //数据缺失情况下认为是不合法
     if (!self.zTicket.length || 
-        !self.expireTimestamp ||
-        self.expireTimestamp < [NSDate date].timeIntervalSince1970) {
+        !self.expiredTime ||
+        self.expiredTime < [NSDate date].timeIntervalSince1970) {
         self.valid = NO;
     }
     return _valid;
