@@ -15,14 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 @required
 
 @property (class, nonatomic, strong, readonly) id<AKUserProtocol> currentUser;/**<当前用户*/
-@property (nonatomic, strong) NSString *visitorID;/**<游客ID*/
-@property (nonatomic, strong) NSString *userID;/**<用户ID*/
+@property (nonatomic, copy) NSString *visitorID;/**<游客ID*/
+@property (nonatomic, copy) NSString *userID;/**<用户ID*/
 
 /**
  *  OAuth模式下使用openID
  *  OAuth模式下userID总是等于openID
  */
-@property (nonatomic, strong) NSString *openID;
+@property (nonatomic, copy) NSString *openID;
 
 @property (nonatomic, assign, getter=isLogined) BOOL logined;/**<是否已经登陆*/
 
@@ -32,18 +32,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *smallPortrait;/**<小头像，主要用于IM，通知等*/
 @property (nonatomic, copy) NSString *largePortrait;/**<大头像*/
 
-@property (nonatomic, strong) NSString *nickname;/**<昵称*/
-@property (nonatomic, strong) NSString *realname;/**<真名*/
+@property (nonatomic, copy) NSString *nickname;/**<昵称*/
+@property (nonatomic, copy) NSString *realname;/**<真名*/
 
 @property (nonatomic, assign) NSUInteger gender;/**<性别*/
 
-@property (nonatomic, strong) NSString *mobile;/**<手机号*/
-@property (nonatomic, strong) NSString *tel;/**<电话*/
-@property (nonatomic, strong) NSString *email;/**<邮件*/
-@property (nonatomic, strong) NSString *address;/**<地址*/
+@property (nonatomic, copy) NSString *mobile;/**<手机号*/
+@property (nonatomic, copy) NSString *tel;/**<电话*/
+@property (nonatomic, copy) NSString *email;/**<邮件*/
+@property (nonatomic, copy) NSString *address;/**<地址*/
 
-@property (nonatomic, strong) NSString *brief;/**<简介*/
-@property (nonatomic, strong) NSString *detail;/**<详情*/
+@property (nonatomic, copy) NSString *brief;/**<简介*/
+@property (nonatomic, copy) NSString *detail;/**<详情*/
 
 @property (nonatomic, assign) NSUInteger loginType;/**<登陆类型*/
 
