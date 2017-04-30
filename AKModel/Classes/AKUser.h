@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *openID;
 
 @property (nonatomic, assign, getter=isLogined) BOOL logined;/**<是否已经登陆*/
+@property (nonatomic, assign) NSTimeInterval loginTime;//登录时间戳
 
 @property (nonatomic, assign) NSUInteger role;/**<用户权限*/
 
@@ -40,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *tel;/**<电话*/
 @property (nonatomic, copy) NSString *email;/**<邮件*/
 @property (nonatomic, copy) NSString *address;/**<地址*/
+@property (nonatomic, assign) NSTimeInterval birthday;//诞生时间戳
 
 @property (nonatomic, copy) NSString *brief;/**<简介*/
 @property (nonatomic, copy) NSString *detail;/**<详情*/
