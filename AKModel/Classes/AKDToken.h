@@ -9,16 +9,11 @@
 #import "AKModel.h"
 #import "AKTokenProtocol.h"
 
-typedef NS_ENUM(NSUInteger, AKTokenState) {
-    AKTokenStateNormal,
-    AKTokenStateRefreshing
-};
-
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AKToken : AKModel<AKTokenProtocol>
+@interface AKDToken : AKModel<AKTokenProtocol>
 
-@property (class, nonatomic, strong, readonly) AKToken *currentToken;/**<当前token*/
+@property (class, nonatomic, strong, readonly) AKDToken *currentToken;/**<当前token*/
 
 @property (nonatomic, copy) NSString *accessToken;
 @property (nonatomic, copy) NSString *refreshToken;

@@ -6,13 +6,13 @@
 //
 //
 
-#import "AKToken.h"
+#import "AKDToken.h"
 #import "AKCoding.h"
 
-@implementation AKToken
+@implementation AKDToken
 
-+ (AKToken *)currentToken {
-    static AKToken *sharedInstance = nil;
++ (AKDToken *)currentToken {
+    static AKDToken *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if(!(sharedInstance = [self readSingleton])) {
@@ -48,7 +48,7 @@ AKCoding
     //数据缺失情况下认为是不合法
     if (!self.accessToken.length || 
         !self.refreshToken.length || 
-        !self.expireTimestamp) {
+        !self.expiredTime) {
         self.valid = NO;
     }
     return _valid;
@@ -67,7 +67,7 @@ AKCoding
 }
 
 - (BOOL)isUnexpired {
-    if (self.expireTimestamp < [NSDate date].timeIntervalSince1970) {
+    if (self.expiredTime < [NSDate date].timeIntervalSince1970) {
         self.unexpired = NO;
     }
     return _unexpired;

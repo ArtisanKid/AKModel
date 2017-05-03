@@ -12,10 +12,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AKModel : NSObject
 
-//监听自身属性
+/**
+ 监听自身属性
+
+ @param firstKeyPath 监听路径
+ */
 - (void)registerKVO:(NSString *)firstKeyPath, ... NS_REQUIRES_NIL_TERMINATION;
 
-
+/**
+ 解除监听自身属性
+ 
+ @param firstKeyPath 监听路径
+ */
 - (void)unregisterKVO:(NSString *)firstKeyPath, ... NS_REQUIRES_NIL_TERMINATION;
 
 - (void)clearUp;

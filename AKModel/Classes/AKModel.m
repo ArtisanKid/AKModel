@@ -37,7 +37,7 @@
         
         [self.observedKeyPathsM addObject:keyPath];
         [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
-    } while (keyPath = va_arg(argList, id));
+    } while (keyPath == va_arg(argList, id));
     va_end(argList);
 }
 
@@ -60,7 +60,7 @@
         
         [self.observedKeyPathsM removeObject:keyPath];
         [self removeObserver:self forKeyPath:keyPath];
-    } while (keyPath = va_arg(argList, id));
+    } while (keyPath == va_arg(argList, id));
     va_end(argList);
 }
 
