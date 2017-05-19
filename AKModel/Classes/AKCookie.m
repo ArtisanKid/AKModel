@@ -18,7 +18,7 @@
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        [sharedInstance registerKVO:@"zTicket", @"expiredTime", @"valid", nil];
+        [sharedInstance registerKVO:@"zTicket", @"expiredTime", nil];
     });
     return sharedInstance;
 }
@@ -33,15 +33,12 @@ AKCoding
         return;
     }
     
-    if(valid) {
-        [self willChangeValueForKey:@"valid"];
-        _valid = valid;
-        [self willChangeValueForKey:@"valid"];
-    } else {
-        _valid = valid;
+    _valid = valid;
+    
+    if(!_valid) {
         [self clearUp];
-        [self cacheSingleton];
     }
+    [self cacheSingleton];
 }
 
 - (BOOL)isValid {

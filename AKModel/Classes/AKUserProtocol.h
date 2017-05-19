@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol AKUserProtocol <NSObject, NSCoding>
+@protocol AKUserProtocol
 
 @required
 

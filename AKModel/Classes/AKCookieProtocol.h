@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol AKCookieProtocol <NSObject>
+@protocol AKCookieProtocol
 
 @property (nonatomic, copy) NSString *zTicket;
 @property (nonatomic, assign) NSTimeInterval expiredTime;/**<过期时间*/

@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AKUser : AKModel<AKUserProtocol>
+@interface AKUser : AKModel<AKUserProtocol, NSCoding>
 
 @property (class, nonatomic, strong, readonly) AKUser *currentUser;/**<当前用户*/
 @property (nonatomic, copy) NSString *visitorID;/**<游客ID*/
@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *detail;/**<详情*/
 
 @property (nonatomic, assign) NSUInteger loginType;/**<登陆类型*/
+
+- (void)registerKVO;
 
 /**
  *  注册Log状态

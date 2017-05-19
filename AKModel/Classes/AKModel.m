@@ -37,7 +37,7 @@
         
         [self.observedKeyPathsM addObject:keyPath];
         [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
-    } while (keyPath == va_arg(argList, id));
+    } while (keyPath = va_arg(argList, id));
     va_end(argList);
 }
 
@@ -60,7 +60,7 @@
         
         [self.observedKeyPathsM removeObject:keyPath];
         [self removeObserver:self forKeyPath:keyPath];
-    } while (keyPath == va_arg(argList, id));
+    } while (keyPath = va_arg(argList, id));
     va_end(argList);
 }
 
@@ -119,7 +119,7 @@
 
 + (id)readFromFolderPath:(NSString *)folderPath signature:(NSString *)signature {
     Class class = [self class];
-    AKModelLog(@"缓存%@对象", NSStringFromClass(class));
+    AKModelLog(@"读取%@对象", NSStringFromClass(class));
     if(![self conformsToProtocol:@protocol(NSCoding)]) {
         AKModelLog(@"%@未实现NSCoding协议", NSStringFromClass(class));
         return nil;
@@ -161,7 +161,7 @@
     NSMutableArray *namesM = [NSMutableArray array];
     do {
         NSBundle *bundle = [NSBundle bundleForClass:class];
-        if (bundle != NSBundle.mainBundle) {//非自定义类，不做监听
+        if (![bundle.bundlePath containsString:NSBundle.mainBundle.bundlePath]) {//非自定义类，不做监听
             return [namesM copy];
         }
         

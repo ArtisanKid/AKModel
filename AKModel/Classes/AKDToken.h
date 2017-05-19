@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AKDToken : AKModel<AKTokenProtocol>
+@interface AKDToken : AKModel<AKTokenProtocol, NSCoding>
 
 @property (class, nonatomic, strong, readonly) AKDToken *currentToken;/**<当前token*/
 

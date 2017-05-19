@@ -18,7 +18,7 @@
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        [sharedInstance registerKVO:@"accessToken", @"refreshToken", @"expiredTime", @"valid", @"unexpired", nil];
+        [sharedInstance registerKVO:@"accessToken", @"refreshToken", @"expiredTime", nil];
     });
     return sharedInstance;
 }
@@ -33,15 +33,12 @@ AKCoding
         return;
     }
     
-    if(valid) {
-        [self willChangeValueForKey:@"valid"];
-        _valid = valid;
-        [self willChangeValueForKey:@"valid"];
-    } else {
-        _valid = valid;
+    _valid = valid;
+    
+    if(!_valid) {
         [self clearUp];
-        [self cacheSingleton];
     }
+    [self cacheSingleton];
 }
 
 - (BOOL)isValid {
@@ -61,10 +58,10 @@ AKCoding
         return;
     }
     
-    [self willChangeValueForKey:@"unexpired"];
     _unexpired = unexpired;
-    [self willChangeValueForKey:@"unexpired"];
+    [self cacheSingleton];
 }
+
 
 - (BOOL)isUnexpired {
     if (self.expiredTime < [NSDate date].timeIntervalSince1970) {

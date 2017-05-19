@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AKCookie : AKModel
+@interface AKCookie : AKModel<AKCookieProtocol, NSCoding>
 
 @property (class, nonatomic, strong, readonly) AKCookie *currentCookie;/**<当前cookie*/
 
