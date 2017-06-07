@@ -129,6 +129,12 @@
     return [NSKeyedUnarchiver unarchiveObjectWithFile:path];
 }
 
+#pragma mark - 重载方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    AKModelLog(@"变更属性%@，%@", keyPath, change);
+    [self cacheSingleton];
+}
+
 #pragma mark - Private Method
 - (NSMutableSet *)observedKeyPathsM {
     if(_observedKeyPathsM) {
@@ -149,11 +155,6 @@
     [[self.observedKeyPathsM copy] enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         [self addObserver:self forKeyPath:key options:NSKeyValueObservingOptionNew context:NULL];
     }];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    AKModelLog(@"变更属性%@，%@", keyPath, change);
-    [self cacheSingleton];
 }
 
 + (NSArray<NSString *> *)customPropertyNames {
