@@ -18,7 +18,7 @@
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        [sharedInstance registerKVO:@"zTicket", @"expiredTime", nil];
+        [sharedInstance registerKVO:@"zTicket", @"expiredTime", @"valid", @"unexpired", nil];
     });
     return sharedInstance;
 }
@@ -38,17 +38,24 @@ AKCoding
     if(!_valid) {
         [self clearUp];
     }
-    [self cacheSingleton];
 }
 
 - (BOOL)isValid {
     //数据缺失情况下认为是不合法
     if (!self.zTicket.length || 
-        !self.expiredTime ||
-        self.expiredTime < [NSDate date].timeIntervalSince1970) {
-        self.valid = NO;
+        !self.expiredTime) {
+        _valid = NO;
     }
     return _valid;
+}
+
+@synthesize unexpired = _unexpired;
+
+- (BOOL)isUnexpired {
+    if (self.expiredTime < [NSDate date].timeIntervalSince1970) {
+        _unexpired = NO;
+    }
+    return _unexpired;
 }
 
 @end

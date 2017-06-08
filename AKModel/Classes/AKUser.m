@@ -28,13 +28,13 @@ static OSSpinLock AKUser_Lock = OS_SPINLOCK_INIT;
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
-        
+        [sharedInstance registerKVO];
     });
     return sharedInstance;
 }
 
 - (void)registerKVO {
-    [self registerKVO:@"visitorID", @"userID", @"openID", @"role", @"portrait", @"smallPortrait", @"largePortrait", @"nickName", @"realName", @"gender", @"mobile", @"tel", @"email", @"address", @"brief", @"detail", @"loginType", nil];
+    [self registerKVO:@"visitorID", @"userID", @"openID", @"role", @"portrait", @"smallPortrait", @"largePortrait", @"nickName", @"realName", @"gender", @"mobile", @"tel", @"email", @"address", @"brief", @"detail", @"loginType", @"logined", nil];
 }
 
 AKCoding
@@ -69,7 +69,6 @@ AKCoding
     if(!_logined) {
         [self clearUp];
     }
-    [self cacheSingleton];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         OSSpinLockLock(&AKUser_Lock);
