@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AKModel : NSObject
 
+@property (nonatomic, strong, readonly) NSMutableSet *observedKeyPathsM;
+
 /**
  监听自身属性
 

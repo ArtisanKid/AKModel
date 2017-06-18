@@ -18,6 +18,7 @@
         if(!(sharedInstance = [self readSingleton])) {
             sharedInstance = [[super allocWithZone:NULL] init];
         }
+        [sharedInstance.observedKeyPathsM removeAllObjects];
         [sharedInstance registerKVO:@"accessToken", @"refreshToken", @"expiredTime", @"valid", @"unexpired", nil];
     });
     return sharedInstance;

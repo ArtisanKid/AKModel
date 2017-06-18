@@ -34,6 +34,7 @@ static OSSpinLock AKUser_Lock = OS_SPINLOCK_INIT;
 }
 
 - (void)registerKVO {
+    [self.observedKeyPathsM removeAllObjects];
     [self registerKVO:@"visitorID", @"userID", @"openID", @"role", @"portrait", @"smallPortrait", @"largePortrait", @"nickName", @"realName", @"gender", @"mobile", @"tel", @"email", @"address", @"brief", @"detail", @"loginType", @"logined", nil];
 }
 

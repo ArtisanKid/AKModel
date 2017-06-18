@@ -24,15 +24,15 @@
     va_start(argList, firstKeyPath);
     do {
         if(![keyPath isKindOfClass:[NSString class]]) {
-            return;
+            continue;
         }
         
         if(!keyPath.length) {
-            return;
+            continue;
         }
         
         if([self.observedKeyPathsM containsObject:keyPath]) {
-            return;
+            continue;
         }
         
         [self.observedKeyPathsM addObject:keyPath];
@@ -47,15 +47,15 @@
     va_start(argList, firstKeyPath);
     do {
         if(![keyPath isKindOfClass:[NSString class]]) {
-            return;
+            continue;
         }
         
         if(!keyPath.length) {
-            return;
+            continue;
         }
         
         if(![self.observedKeyPathsM containsObject:keyPath]) {
-            return;
+            continue;
         }
         
         [self.observedKeyPathsM removeObject:keyPath];
