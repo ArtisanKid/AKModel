@@ -1,30 +1,19 @@
 PODS:
   - AKModel (0.1.0):
-    - AKSingleton
     - YYModel (= 1.0.4)
-  - AKSingleton (0.1.0)
   - YYModel (1.0.4)
 
 DEPENDENCIES:
   - AKModel (from `../`)
-  - AKSingleton (from `git@github.com:ArtisanKid/AKSingleton.git`)
 
 EXTERNAL SOURCES:
   AKModel:
     :path: "../"
-  AKSingleton:
-    :git: git@github.com:ArtisanKid/AKSingleton.git
-
-CHECKOUT OPTIONS:
-  AKSingleton:
-    :commit: ae601a440dc4e11ff3f33f13635738f1a97144c4
-    :git: git@github.com:ArtisanKid/AKSingleton.git
 
 SPEC CHECKSUMS:
-  AKModel: 677493b2dbfd198e00c1cd9b4eed7e974250ac58
-  AKSingleton: 22466e00c1a388f9e563c10aae0a4f4035cccfc2
+  AKModel: 63a10c17b8ffe687447a5b8c6a9ee1f3a8ff006d
   YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
 
-PODFILE CHECKSUM: 9857ac85e491cc9c2b5c5c73f6d450cdeaf724b8
+PODFILE CHECKSUM: 8a4473f95d5aff5a379af58b3a964b333c319c4c
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.2.1
