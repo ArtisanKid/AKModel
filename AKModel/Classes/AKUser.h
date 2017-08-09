@@ -7,7 +7,6 @@
 //
 
 #import "AKModel.h"
-#import "AKCity.h"
 #import "AKUserProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
