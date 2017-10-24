@@ -1,19 +1,16 @@
 PODS:
-  - AKModel (0.1.0):
-    - YYModel (= 1.0.4)
-  - YYModel (1.0.4)
+  - AKModel (0.1.0)
 
 DEPENDENCIES:
   - AKModel (from `../`)
 
 EXTERNAL SOURCES:
   AKModel:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  AKModel: 63a10c17b8ffe687447a5b8c6a9ee1f3a8ff006d
-  YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
+  AKModel: d02cad9a2b3a037a99db0b6d67fa305cb743e5e1
 
 PODFILE CHECKSUM: 8a4473f95d5aff5a379af58b3a964b333c319c4c
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.1.1

@@ -6,7 +6,7 @@
 //
 //
 
-//村
+//村级行政单位
 
 #import <Foundation/Foundation.h>
 

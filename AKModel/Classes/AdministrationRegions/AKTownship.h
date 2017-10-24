@@ -6,21 +6,16 @@
 //
 //
 
-//乡
+//乡级行政单位
 
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSUInteger, AKTownshipType) {
     AKTownshipTypeDefault,//乡
-    
     AKTownshipTypeTown,//镇
-    
     AKTownshipTypeNationalityTownship,//民族乡
-    
     AKTownshipTypeSum,//苏木
-    
     AKTownshipTypeNationalitySum,//民族苏木
-    
     AKTownshipTypeSubdistrictOffice,//街道办事处
 };
 
